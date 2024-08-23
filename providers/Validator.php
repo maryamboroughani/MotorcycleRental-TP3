@@ -2,75 +2,50 @@
 namespace App\Providers;
 
 class Validator {
-    private $errors = array();
-    private $key;
-    private $value;
-    private $name;
+    protected $fields = [];
+    protected $errors = [];
 
-    public function field($key, $value, $name = null){
-        $this->key = $key;
-        $this->value = $value;
-        $this->name = $name ? ucfirst($name) : ucfirst($key);
+    // Define a field and its validation rules
+    public function field($name, $value) {
+        $this->fields[$name] = $value;
         return $this;
     }
 
-    public function required(){
-        if (empty($this->value)){
-            $this->errors[$this->key] = "$this->name is required";
+    // Check if a field is required
+    public function required() {
+        $name = array_key_last($this->fields);
+        if (empty($this->fields[$name])) {
+            $this->errors[$name][] = "$name is required.";
         }
         return $this;
     }
 
-    public function max($length){
-        if(strlen($this->value) > $length){
-            $this->errors[$this->key] = "$this->name must be less than $length characters";
+    // Check if a field is numeric
+    public function numeric() {
+        $name = array_key_last($this->fields);
+        if (!is_numeric($this->fields[$name])) {
+            $this->errors[$name][] = "$name must be a number.";
         }
         return $this;
     }
 
-    public function min($length){
-        if(strlen($this->value) < $length){
-            $this->errors[$this->key] = "$this->name must be more than $length characters";
+    // Check if a field is a valid date
+    public function date() {
+        $name = array_key_last($this->fields);
+        $date = $this->fields[$name];
+        if (!DateTime::createFromFormat('Y-m-d', $date)) {
+            $this->errors[$name][] = "$name must be a valid date (YYYY-MM-DD).";
         }
         return $this;
     }
 
-    public function email(){
-        if(!empty($this->value) && !filter_var($this->value, FILTER_VALIDATE_EMAIL)){
-            $this->errors[$this->key] = "Invalid $this->name format";
-        }
-        return $this;
-    }
-
-    public function numeric(){
-        if(!is_numeric($this->value)){
-            $this->errors[$this->key] = "$this->name must be a number";
-        }
-        return $this;
-    }
-
-    public function regex($pattern, $customMessage = null){
-        if (!preg_match($pattern, $this->value)) {
-            $this->errors[$this->key] = $customMessage ?? "$this->name format is invalid";
-        }
-        return $this;
-    }
-
-    public function minAge($dateOfBirth, $age){
-        $dob = new \DateTime($dateOfBirth);
-        $today = new \DateTime();
-        $interval = $today->diff($dob);
-        if($interval->y < $age){
-            $this->errors[$this->key] = "$this->name must be at least $age years old";
-        }
-        return $this;
-    }
-
-    public function isSuccess(){
+    // Check if validation passed
+    public function isSuccess() {
         return empty($this->errors);
     }
 
-    public function getErrors(){
+    // Get validation errors
+    public function getErrors() {
         return $this->errors;
     }
 }

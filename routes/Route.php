@@ -18,47 +18,47 @@ class Route {
     public static function dispatch() {
         $url = $_SERVER['REQUEST_URI'];
         $urlSegments = explode('?', $url);
-        $urlPath = rtrim($urlSegments[0], '/');
+        $urlPath = rtrim($urlSegments[0], '/'); // Remove trailing slash from the requested URL path
         $method = $_SERVER['REQUEST_METHOD'];
 
-        //echo 'Requested URL: ' . $urlPath . '<br>';
-
-        
         foreach (self::$routes as $route) {
-            if ($route['method'] === $method && self::matchRoute($route['url'], $urlPath)) {
+            $routeUrl = ($route['url'] === '/') ? BASE : rtrim(BASE . $route['url'], '/');
+            
+            // Debugging output
+            // echo 'BASE constant: ' . BASE . '<br>';
+            // echo 'Route URL: ' . $route['url'] . '<br>';
+            // echo 'Full Route Path: ' . $routeUrl . '<br>';
+            // echo 'Requested URL Path: ' . $urlPath . '<br>';
+            // echo 'Request Method: ' . $method . '<br>';
+            // echo 'Route Method: ' . $route['method'] . '<br>';
+            // echo '<hr>'; 
+
+            // Compare the normalized paths
+            if ($routeUrl == $urlPath && $route['method'] == $method) {
                 $controllerSegments = explode('@', $route['controller']);
                 $controllerName = "App\\Controllers\\" . $controllerSegments[0];
                 $methodName = $controllerSegments[1];
 
-                if (!class_exists($controllerName) || !method_exists($controllerName, $methodName)) {
-                    http_response_code(404);
-                    echo "404 - Controller or Method not found";
-                    return;
-                }
-
                 $controllerInstance = new $controllerName();
-
-                $queryParams = [];
-                if (isset($urlSegments[1])) {
-                    parse_str($urlSegments[1], $queryParams);
-                }
-
-                if ($method === "GET") {
-                    $controllerInstance->$methodName($queryParams);
+                if ($method == "GET") {
+                    if (isset($urlSegments[1])) {
+                        parse_str($urlSegments[1], $queryParams);
+                        $controllerInstance->$methodName($queryParams);
+                    } else {
+                        $controllerInstance->$methodName();
+                    }
                 } elseif ($method === "POST") {
-                    $controllerInstance->$methodName($_POST, $queryParams);
+                    if (isset($urlSegments[1])) {
+                        parse_str($urlSegments[1], $queryParams);
+                        $controllerInstance->$methodName($_POST, $queryParams);
+                    } else {
+                        $controllerInstance->$methodName($_POST);
+                    }
                 }
-                
                 return;
             }
-        }
-
+        }          
         http_response_code(404);
         echo "404 - Page not found";
-    }
-
-    // Match the route using simple patterns
-    private static function matchRoute($routeUrl, $requestUrl) {
-        return $routeUrl === $requestUrl;
     }
 }

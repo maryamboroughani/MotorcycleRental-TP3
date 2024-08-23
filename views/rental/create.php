@@ -1,24 +1,28 @@
 {{ include('layouts/header.php', { title: 'New Rental' }) }}
-<div class="container">
-    <form method="post" action="{{ path('rental_store') }}">
-        <h2>New Rental</h2>
-        
-       
-        
-        <label>Motorcycle ID
-            <input type="text" name="motorcycle_id" required>
-        </label>
-        <label>User ID
-            <input type="text" name="user_id" required>
-        </label>
-        <label>Start Date
-            <input type="date" name="start_date" required>
-        </label>
-        <label>End Date
-            <input type="date" name="end_date" required>
-        </label>
-        
-        <input type="submit" class="btn" value="Save">
-    </form>
-</div>
+
+<h1>New Rental</h1>
+
+{% if errors is defined %}
+    {% for error in errors %}
+        <p class="error">{{ error }}</p>
+    {% endfor %}
+{% endif %}
+
+<form action="{{ base }}/rental/store" method="post">
+    <label>Motorcycle ID
+        <input type="text" name="motorcycle_id" value="{{ rental.motorcycle_id | default('') }}" required>
+    </label>
+    <label>User ID
+        <input type="text" name="user_id" value="{{ rental.user_id | default('') }}" required>
+    </label>
+    <label>Start Date
+        <input type="date" name="start_date" value="{{ rental.start_date | default('') }}" required>
+    </label>
+    <label>End Date
+        <input type="date" name="end_date" value="{{ rental.end_date | default('') }}" required>
+    </label>
+    
+    <button type="submit" class="btn">Create Rental</button>
+</form>
+
 {{ include('layouts/footer.php') }}

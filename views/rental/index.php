@@ -23,10 +23,11 @@
             <td>{{ rental.start_date|date('d M Y') }}</td>
             <td>{{ rental.end_date|date('d M Y') }}</td>
             <td>
+                <a href="{{ base }}/rental/show?id={{ rental.id }}">View</a>
                 <a href="{{ base }}/rental/edit?id={{ rental.id }}">Edit</a>
                 <form action="{{ base }}/rental/delete" method="post" style="display:inline;">
                     <input type="hidden" name="id" value="{{ rental.id }}">
-                    <button type="submit">Delete</button>
+                    <button type="submit" class="btn red">Delete</button>
                 </form>
             </td>
         </tr>
