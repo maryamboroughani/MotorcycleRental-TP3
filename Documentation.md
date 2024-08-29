@@ -28,12 +28,12 @@ Les fonctionnalités pour les administrateurs incluent :
 ### Liens Importants
 
 - **WebDev** : [Lien vers le site WebDev](http://)
-- **GitHub** : [Lien vers le dépôt GitHub](https://github.com/maryamboroughani/MotorcycleRental-mvc.git)
+- **GitHub** : [Lien vers le dépôt GitHub](https://github.com/maryamboroughani/MotorcycleRental-TP3.git)
 
 
 ## Instructions d'Utilisation
 
-1. Accédez à l'application via `http://localhost/MotorcycleRental-mvc`.
+1. Accédez à l'application via `http://localhost/MotorcycleRental-TP3/rental`.
 2. Utilisez les fonctionnalités disponibles pour gérer les motos et les locations.
 
 

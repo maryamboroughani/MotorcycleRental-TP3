@@ -6,6 +6,8 @@ use App\Providers\View;
 use App\Providers\Validator;
 use App\Providers\Auth;
 
+require_once 'upload.php';
+
 class RentalController {
 
     public function index() {
@@ -20,10 +22,9 @@ class RentalController {
     }
 
     public function show() {
-        // Use $_GET['id'] to fetch the ID from the query string
         if (isset($_GET['id']) && !empty($_GET['id'])) {
             $rental = new Rental();
-            $selectId = $rental->selectId($_GET['id']); // Pass $_GET['id'] directly
+            $selectId = $rental->selectId($_GET['id']);
 
             if ($selectId) {
                 return View::render('rental/show', ['rental' => $selectId]);
@@ -36,10 +37,9 @@ class RentalController {
     }
 
     public function edit() {
-        // Use $_GET['id'] to fetch the ID from the query string
         if (isset($_GET['id']) && !empty($_GET['id'])) {
             $rental = new Rental();
-            $selectId = $rental->selectId($_GET['id']); // Pass $_GET['id'] directly
+            $selectId = $rental->selectId($_GET['id']);
 
             if ($selectId) {
                 return View::render('rental/edit', ['rental' => $selectId]);
@@ -47,12 +47,11 @@ class RentalController {
                 return View::render('error', ['msg' => 'Rental not found!']);
             }
         } else {
-            View::render('error', ['msg' => 'Invalid rental ID!']);
+            return View::render('error', ['msg' => 'Invalid rental ID!']);
         }
     }
 
     public function store($data) {
-        // Initialize the Validator
         $validator = new Validator();
         $validator->field('motorcycle_id', $data['motorcycle_id'] ?? null)->required()->numeric();
         $validator->field('user_id', $data['user_id'] ?? null)->required()->numeric();
@@ -61,9 +60,16 @@ class RentalController {
 
         if ($validator->isSuccess()) {
             $rental = new Rental();
+            $photoResponse = handleFileUpload($_FILES['photo']); // Handle file upload
+
+            if (isset($photoResponse['error'])) {
+                return View::render('rental/create', ['errors' => [$photoResponse['error']], 'rental' => $data]);
+            }
+
+            $data['photo'] = $photoResponse['file']; // Include photo in data
             $insert = $rental->insert($data); 
             if ($insert) {
-                return View::redirect('rental/show?id=' . $rental->id); // Assuming $rental->id is set correctly
+                return View::redirect('rental/show?id=' . $rental->id); // Redirect to the rental show page
             } else {
                 return View::render('error', ['msg' => 'Failed to create rental.']);
             }
@@ -85,30 +91,8 @@ class RentalController {
 
             if ($validator->isSuccess()) {
                 $rental = new Rental();
-                $update = $rental->update($data, $id);
-                if ($update) {
-                    return View::redirect('rental/show?id=' . $id);
-                } else {
-                    return View::render('error', ['msg' => 'Failed to update rental.']);
-                }
-            } else {
-                $errors = $validator->getErrors();
-                return View::render('rental/edit', ['errors' => $errors, 'rental' => $data]);
+               
             }
-        } else {
-            return View::render('error', ['msg' => 'Invalid rental ID!']);
-        }
-    }
-
-    public function delete($data) {
-        $rental = new Rental();
-        $delete = $rental->delete($data['id'] ?? null); // Ensure 'id' is set
-        if ($delete) {
-            return View::redirect('rental');
-        } else {
-            return View::render('error', ['msg' => 'Failed to delete rental.']);
         }
     }
 }
-?>
-

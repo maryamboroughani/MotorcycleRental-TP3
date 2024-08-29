@@ -11,8 +11,8 @@
 // });
 
 // Manual test script
-$password = 'your_password_here'; // Replace with a test password
-$hashedPassword = password_hash($password . 'H4@1&', PASSWORD_BCRYPT); // Replace 'H4@1&' with the actual salt used
+$password = ''; 
+$hashedPassword = password_hash($password . 'H4@1&', PASSWORD_BCRYPT);
 echo "Hashed password: " . $hashedPassword . PHP_EOL;
 
 if (password_verify($password . 'H4@1&', $hashedPassword)) {
