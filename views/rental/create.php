@@ -8,7 +8,8 @@
     {% endfor %}
 {% endif %}
 
-<form action="{{ base }}/rental/store" method="post">
+<form action="{{ base }}/rental/create" method="post">
+
     <label>Motorcycle ID
         <input type="text" name="motorcycle_id" value="{{ rental.motorcycle_id | default('') }}" required>
     </label>

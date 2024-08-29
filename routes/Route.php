@@ -18,7 +18,7 @@ class Route {
     public static function dispatch() {
         $url = $_SERVER['REQUEST_URI'];
         $urlSegments = explode('?', $url);
-        $urlPath = rtrim($urlSegments[0], '/'); // Remove trailing slash from the requested URL path
+        $urlPath = rtrim($urlSegments[0], '/'); 
         $method = $_SERVER['REQUEST_METHOD'];
 
         foreach (self::$routes as $route) {

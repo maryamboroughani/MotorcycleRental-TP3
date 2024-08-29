@@ -2,112 +2,106 @@
 namespace App\Models;
 
 abstract class CRUD extends \PDO {
- 
-    // Constructor to set up the PDO connection
     final public function __construct() {
-        $dsn = 'mysql:host=localhost;dbname=motorcycle_shop;port=8889;charset=utf8';
-        $username = 'root';
-        $password = 'root';
-        try {
-            parent::__construct($dsn, $username, $password);
-        } catch (\PDOException $e) {
-            // Handle connection error
-            die('Database connection failed: ' . $e->getMessage());
-        }
+            parent::__construct('mysql:host=localhost;dbname=motorcycle_shop;port=8889; charset=utf8', 'root', 'root');
+        
     }
+        
 
-    // Method to select all rows from the table, with optional sorting
     final public function select($field = null, $order = 'ASC') {
-        if ($field === null) {
+        if ($field == null) {
             $field = $this->primaryKey;
         }
-        $sql = "SELECT * FROM " . $this->table . " ORDER BY " . $field . " " . $order;
-        try {
-            $stmt = $this->query($sql);
-            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        } catch (\PDOException $e) {
-            // Handle query error
-            die('Query error: ' . $e->getMessage());
+        $sql = "SELECT * FROM $this->table ORDER BY $field $order";
+        $stmt = $this->query($sql);
+
+        if ($stmt === false) {
+            throw new \Exception("SQL Query Error: " . $this->errorInfo()[2]);
         }
+
+        return $stmt->fetchAll();
     }
 
-    // Method to select a row by its primary key
     final public function selectId($value) {
-        $sql = "SELECT * FROM " . $this->table . " WHERE " . $this->primaryKey . " = :primaryKey";
-        try {
-            $stmt = $this->prepare($sql);
-            $stmt->bindValue(":primaryKey", $value);
-            $stmt->execute();
-            return $stmt->fetch(\PDO::FETCH_ASSOC);
-        } catch (\PDOException $e) {
-            // Handle query error
-            die('Query error: ' . $e->getMessage());
+        $sql = "SELECT * FROM $this->table WHERE $this->primaryKey = :$this->primaryKey";
+        $stmt = $this->prepare($sql);
+        $stmt->bindValue(":$this->primaryKey", $value);
+        if (!$stmt->execute()) {
+            throw new \Exception("SQL Query Error: " . $stmt->errorInfo()[2]);
         }
+        $count = $stmt->rowCount();
+        return ($count == 1) ? $stmt->fetch() : false;
     }
 
-    // Method to insert a new row into the table
     final public function insert($data) {
-        $data = array_intersect_key($data, array_flip($this->fillable));
-        $fieldNames = implode(', ', array_keys($data));
-        $fieldValues = ':' . implode(', :', array_keys($data));
-        $sql = "INSERT INTO " . $this->table . " ($fieldNames) VALUES ($fieldValues)";
-        try {
+        $data_keys = array_fill_keys($this->fillable, '');
+        $data = array_intersect_key($data, $data_keys);
+        $fieldName = implode(', ', array_keys($data));
+        $fieldvalue = ":" . implode(', :', array_keys($data));
+        $sql = "INSERT INTO $this->table ($fieldName) VALUES ($fieldvalue)";
+
+        $stmt = $this->prepare($sql);
+        foreach ($data as $key => $value) {
+            $stmt->bindValue(":$key", $value);
+        }
+        if (!$stmt->execute()) {
+            throw new \Exception("SQL Query Error: " . $stmt->errorInfo()[2]);
+        }
+
+        return $this->lastInsertId();
+    }
+
+    final public function update($data, $id) {
+        if ($this->selectId($id)) {
+            $data_keys = array_fill_keys($this->fillable, '');
+            $data = array_intersect_key($data, $data_keys);
+
+            $fieldName = null;
+            foreach ($data as $key => $value) {
+                $fieldName .= "$key = :$key, ";
+            }
+            $fieldName = rtrim($fieldName, ', ');
+            $sql = "UPDATE $this->table SET $fieldName WHERE $this->primaryKey = :$this->primaryKey";
             $stmt = $this->prepare($sql);
+            $data[$this->primaryKey] = $id;
             foreach ($data as $key => $value) {
                 $stmt->bindValue(":$key", $value);
             }
-            if ($stmt->execute()) {
-                return $this->lastInsertId();
-            } else {
-                return false;
+            if (!$stmt->execute()) {
+                throw new \Exception("SQL Query Error: " . $stmt->errorInfo()[2]);
             }
-        } catch (\PDOException $e) {
-            // Handle query error
-            die('Query error: ' . $e->getMessage());
-        }
-    }
 
-    // Method to update an existing row
-    final public function update($data, $id) {
-        if ($this->selectId($id)) {
-            $data = array_intersect_key($data, array_flip($this->fillable));
-            $fieldNames = '';
-            foreach ($data as $key => $value) {
-                $fieldNames .= "$key = :$key, ";
-            }
-            $fieldNames = rtrim($fieldNames, ', ');
-            $sql = "UPDATE " . $this->table . " SET $fieldNames WHERE " . $this->primaryKey . " = :primaryKey";
-            try {
-                $stmt = $this->prepare($sql);
-                $data[$this->primaryKey] = $id;
-                foreach ($data as $key => $value) {
-                    $stmt->bindValue(":$key", $value);
-                }
-                return $stmt->execute();
-            } catch (\PDOException $e) {
-                // Handle query error
-                die('Query error: ' . $e->getMessage());
-            }
+            return true;
         } else {
             return false;
         }
     }
 
-    // Method to delete a row by its primary key
     final public function delete($value) {
         if ($this->selectId($value)) {
-            $sql = "DELETE FROM " . $this->table . " WHERE " . $this->primaryKey . " = :primaryKey";
-            try {
-                $stmt = $this->prepare($sql);
-                $stmt->bindValue(":primaryKey", $value);
-                return $stmt->execute();
-            } catch (\PDOException $e) {
-                // Handle query error
-                die('Query error: ' . $e->getMessage());
+            $sql = "DELETE FROM $this->table WHERE $this->primaryKey = :$this->primaryKey";
+            $stmt = $this->prepare($sql);
+            $stmt->bindValue(":$this->primaryKey", $value);
+            if (!$stmt->execute()) {
+                throw new \Exception("SQL Query Error: " . $stmt->errorInfo()[2]);
             }
+
+            return true;
         } else {
+            return false;
+        }
+    }
+
+    public function unique($field, $value){
+        $sql = "SELECT * FROM $this->table WHERE $field = :$field";
+        $stmt= $this->prepare($sql);
+        $stmt->bindValue(":$field", $value);
+        $stmt->execute();
+        $count = $stmt->rowCount();
+        if($count == 1){
+            return $stmt->fetch();
+        }else{
             return false;
         }
     }
 }
-?>

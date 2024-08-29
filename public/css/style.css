@@ -1,19 +1,30 @@
-body{
-    font-family: Arial, Helvetica, sans-serif;
-    margin:auto;
+/* General Body Styles */
+body {
+    margin: 0;
+    padding: 0;
 }
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+/* Navigation Bar */
 nav {
     background-color: #333;
     overflow: hidden;
 }
+
 nav ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
+
 nav li {
     float: left;
 }
+
 nav li a {
     display: block;
     color: white;
@@ -21,96 +32,147 @@ nav li a {
     padding: 14px 16px;
     text-decoration: none;
 }
-main{
-    padding: 20px;
-}
+
 nav li a:hover {
     background-color: #111;
 }
-table {
-    border-collapse: collapse; 
-    width: 100%; 
+
+/* Main content area */
+main {
+    padding: 20px;
+    padding-bottom: 60px;
 }
+
+/* Table Styles */
+table {
+    width: 100%; 
+    margin-bottom: 100px;
+}
+
 th {
     background-color: #333;
     color: #fff;
     text-align: left;
     padding: 10px;
 }
+
 td {
     border: 1px solid #333;
     padding: 10px;
 }
+
+
 tr:nth-child(even) {
     background-color: #f2f2f2;
 }
+
+/* Form and Container Styles */
 .container {
-    width: 300px;
-    margin: 0 auto;
+    max-width: 600px; 
+    margin: 20px auto;
     border: 1px solid #CCCCCC;
     padding: 30px;
     border-radius: 10px;
+    background-color: #f9f9f9;
 }
+
 label {
     display: block;
     margin-top: 10px;
     font-weight: bold;
 }
+
 input, select {
     width: 100%;
-    padding: 5px;
-    margin-bottom: 5px;
+    padding: 20px; 
+    margin-bottom: 10px; 
     border: 1px solid #ccc;
     border-radius: 5px;
+    box-sizing: border-box;
 }
+
+/* Button Styles */
 .btn {
-    margin-top:10px;
+    margin-top: 10px;
     display: inline-block;
-    padding: 5px 10px;
+    padding: 10px 20px; 
     font-size: 16px;
     text-align: center;
     text-decoration: none;
     cursor: pointer;
     outline: 2px solid #3498db;
-    border: 0px;
+    border: none; 
     color: #3498db;
     border-radius: 5px;
     background-color: #fff;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease; 
+   
 }
-.btn.block{
+
+.btn.block {
     width: 100%;
-    padding: 5px 0px;
+    padding: 10px 0;
 }
+
 .btn:hover {
     background-color: #3498db;
     color: #fff;
 }
+
 .btn.red {
     outline: 2px solid #98082a;
-    border: 0px;
     color: #db3450;
 }
+
 .btn.red:hover {
     background-color: #db3450;
     color: #fff;
 }
-.error{
+
+/* Error Message Styles */
+.error {
     width: 100%;
     display: inline-block;
-    padding:5px;
+    padding: 10px;
     background-color: rgb(251, 187, 187);
     border-radius: 5px;
-    border: red 1px solid;
+    border: 1px solid red;
     font-size: 0.9em;
-    color:red;
+    color: red;
 }
+
+/* Header Styles */
+.header {
+    background-color:blue;
+    padding: 20px; 
+    text-align: center; 
+    color: white; 
+}
+
+/* Logo Styles */
+.header img {
+    max-width: 150px; 
+    height: auto; 
+    display: block; 
+    margin: 0 auto; 
+}
+
+/* Header Title Styles */
+.header h1 {
+    margin: 20px 0 0; 
+    font-size: 24px;
+    font-weight: normal; 
+}
+
+
+/* Footer Styles  */
 footer {
-    background-color: #333;
+    background-color:blue;
     color: white;
     text-align: center;
     padding: 20px;
-    position: fixed;
+    padding-top: 20px; 
     bottom: 0;
     width: 100%;
+    z-index: 1000; 
 }

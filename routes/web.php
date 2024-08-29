@@ -18,7 +18,14 @@ Route::post('/rental/create', 'RentalController@store');
 Route::get('/rental/show', 'RentalController@show'); 
 Route::get('/rental/edit', 'RentalController@edit'); 
 Route::post('/rental/edit', 'RentalController@update'); 
-Route::post('/rental/delete', 'RentalController@delete'); 
+Route::post('/rental/delete', 'RentalController@delete');
+
+Route::get('/user/create', 'UserController@create');
+Route::post('/user/create', 'UserController@store');
+
+Route::get('/login', 'AuthController@index');
+Route::post('/login', 'AuthController@store');
+Route::get('/logout', 'AuthController@delete');
 
 // Dispatch routes
 Route::dispatch();

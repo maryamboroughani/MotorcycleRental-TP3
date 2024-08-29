@@ -7,8 +7,8 @@
         <p class="error">{{ error }}</p>
     {% endfor %}
 {% endif %}
+<form action="{{ base }}/rental/edit?id={{ rental.id }}" method="post">
 
-<form action="{{ base }}/rental/update?id={{ rental.id }}" method="post">
     <input type="hidden" name="id" value="{{ rental.id }}">
     
     <label>Motorcycle ID

@@ -1,4 +1,4 @@
 <?php
-define('BASE', '/MotorcycleRental-mvc');
-define('ASSET', '/MotorcycleRental-mvc/public/');
+define('BASE', '/MotorcycleRental-TP3');
+define('ASSET', '/MotorcycleRental-TP3/public/');
 

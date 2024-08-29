@@ -1,52 +1,85 @@
 <?php
 namespace App\Providers;
+use App\Models\User;
 
 class Validator {
-    protected $fields = [];
-    protected $errors = [];
+    private $errors = array();
+    private $key;
+    private $value;
+    private $name;
 
-    // Define a field and its validation rules
-    public function field($name, $value) {
-        $this->fields[$name] = $value;
-        return $this;
-    }
-
-    // Check if a field is required
-    public function required() {
-        $name = array_key_last($this->fields);
-        if (empty($this->fields[$name])) {
-            $this->errors[$name][] = "$name is required.";
+    public function field($key, $value, $name = null){
+        $this->key = $key;
+        $this->value = $value;
+        if($name == null){
+            $this->name = ucfirst($key);
+        }else{
+            $this->name = ucfirst($name);
         }
         return $this;
     }
 
-    // Check if a field is numeric
+    public function required(){
+        if (empty($this->value)){
+            $this->errors[$this->key] = "$this->name is required";
+        }
+        return $this;
+    }
+
+    public function max($length){
+        if(strlen($this->value) > $length){
+            $this->errors[$this->key] = "$this->name must be less than $length characters";
+        }
+        return $this;
+    }
+
+    public function min($length){
+        if(strlen($this->value) < $length){
+            $this->errors[$this->key] = "$this->name must be more than $length characters";
+        }
+        return $this;
+    }
+
+    public function email(){
+        if(!empty($this->value) && !filter_var($this->value, FILTER_VALIDATE_EMAIL)){
+            $this->errors[$this->key] = "Invalid $this->name format";
+        }
+        return $this;
+    }
+
     public function numeric() {
-        $name = array_key_last($this->fields);
-        if (!is_numeric($this->fields[$name])) {
-            $this->errors[$name][] = "$name must be a number.";
+        if (!is_numeric($this->value)) {
+            $this->errors[$this->key] = "$this->name must be a numeric value";
         }
         return $this;
     }
 
-    // Check if a field is a valid date
-    public function date() {
-        $name = array_key_last($this->fields);
-        $date = $this->fields[$name];
-        if (!DateTime::createFromFormat('Y-m-d', $date)) {
-            $this->errors[$name][] = "$name must be a valid date (YYYY-MM-DD).";
+    public function isUnique($model){
+        $model = 'App\\Models\\'.$model;
+        $model = new $model;
+        $unique = $model->unique($this->key, $this->value);
+        if($unique){
+            $this->errors[$this->key]="$this->name must be unique";
         }
         return $this;
     }
 
-    // Check if validation passed
-    public function isSuccess() {
-        return empty($this->errors);
+    public function isExist($model, $field = 'id'){
+        $model = 'App\\Models\\'.$model;
+        $model = new $model;
+        $unique = $model->unique($field, $this->value);
+        if(!$unique){
+            $this->errors[$this->key]="$this->name must exist";
+        }
+        return $this;
     }
 
-    // Get validation errors
-    public function getErrors() {
-        return $this->errors;
+    public function isSuccess(){
+        if(empty($this->errors)) return true;
+    }
+
+    public function getErrors(){
+        if(!$this->isSuccess()) return $this->errors;
     }
 }
 ?>

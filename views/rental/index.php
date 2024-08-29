@@ -38,7 +38,6 @@
 {% else %}
 <p>No rentals found.</p>
 {% endif %}
-
 <a href="{{ base }}/rental/create" class="btn">New Rental</a>
 
 {{ include('layouts/footer.php') }}
