@@ -32,24 +32,25 @@ abstract class CRUD extends \PDO {
         $count = $stmt->rowCount();
         return ($count == 1) ? $stmt->fetch() : false;
     }
-
     final public function insert($data) {
         $data_keys = array_fill_keys($this->fillable, '');
         $data = array_intersect_key($data, $data_keys);
         $fieldName = implode(', ', array_keys($data));
         $fieldvalue = ":" . implode(', :', array_keys($data));
         $sql = "INSERT INTO $this->table ($fieldName) VALUES ($fieldvalue)";
-
+    
         $stmt = $this->prepare($sql);
         foreach ($data as $key => $value) {
             $stmt->bindValue(":$key", $value);
         }
-        if (!$stmt->execute()) {
-            throw new \Exception("SQL Query Error: " . $stmt->errorInfo()[2]);
+        if($stmt->execute()){
+            return $this->lastInsertId();
+        }else{
+            return false;
         }
-
-        return $this->lastInsertId();
+        
     }
+
 
     final public function update($data, $id) {
         if ($this->selectId($id)) {

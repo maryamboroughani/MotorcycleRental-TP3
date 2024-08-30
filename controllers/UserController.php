@@ -10,21 +10,25 @@ use App\Providers\Auth;
 class UserController {
 
     public function __construct() {
-        Auth::session();
+     //   Auth::session();
     }
 
     public function create() {
+
+        $privilege = new Privilege;
+            $privileges = $privilege->select('privilege_name');
+            return View::render('user/create', ['privileges' => $privileges]);
+
+
         if ($_SESSION['privilege_id'] == 1) {
-            $privilege = new Privilege;
-            $privileges = $privilege->select('privilege');
-            View::render('user/create', ['privileges' => $privileges]);
+            
         } else {
             return View::redirect('login');
         }
     }
 
     public function store($data) {
-        Auth::session();
+      //  Auth::session();
         $validator = new Validator;
 
         // Validate data
@@ -52,7 +56,7 @@ class UserController {
 
             // Prepare privileges data for re-render
             $privilege = new Privilege;
-            $privileges = $privilege->select('privilege');
+            $privileges = $privilege->select('privilege_name');
 
             return View::render('user/create', ['errors' => $errors, 'user' => $data, 'privileges' => $privileges]);
         }

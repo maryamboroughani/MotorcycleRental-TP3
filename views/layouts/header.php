@@ -8,7 +8,7 @@
 </head>
 <body>
     <header class="header">
-    <img src="/MotorcycleRental-mvc/public/img/motorcycle_icon.svg" alt="Motorcycle Icon">
+    <img src="/MotorcycleRental-TP3/public/img/motorcycle_icon.svg" alt="Motorcycle Icon">
 
             <h1>Welcome to our Motorcycle Shop</h1>
         </div>
