@@ -23,6 +23,9 @@ Route::post('/rental/delete', 'RentalController@delete');
 Route::get('/user/create', 'UserController@create');
 Route::post('/user/create', 'UserController@store');
 
+//Route::add('/admin/logs', 'LogController@showLogs');
+
+
 Route::get('/login', 'AuthController@index');
 Route::post('/login', 'AuthController@store');
 Route::get('/logout', 'AuthController@delete');

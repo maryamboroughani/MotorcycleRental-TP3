@@ -46,6 +46,24 @@ class User extends CRUD {
             return false; // Email does not exist
         }
     }
-    
+
+    /**
+     * Update the photo path for the user.
+     */
+    public function updatePhotoPath($userId, $photoPath) {
+        // Sanitize the input
+        $photoPath = htmlspecialchars($photoPath, ENT_QUOTES, 'UTF-8');
+
+        // Prepare the SQL query to update the photo path
+        $sql = "UPDATE $this->table SET photo_path = :photo_path WHERE $this->primaryKey = :id";
+
+        // Prepare and execute the statement
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':photo_path', $photoPath);
+        $stmt->bindParam(':id', $userId);
+
+        // Execute and return the result
+        return $stmt->execute();
+    }
 }
 ?>
