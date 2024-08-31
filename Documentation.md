@@ -40,4 +40,4 @@ Les fonctionnalités pour les administrateurs incluent :
 ---
 
 **Auteur**: Maryam Boroughani
-**Date**: 9/08/2024
+**Date**: 30/08/2024

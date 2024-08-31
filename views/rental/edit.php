@@ -8,7 +8,7 @@
     {% endfor %}
 {% endif %}
 
-<form action="{{ base }}/rental/edit?id={{ rental.id }}" method="post" enctype="multipart/form-data">
+<form action="{{ base }}/rental/edit?id={{ rental.id }}" method="post" >
     <input type="hidden" name="id" value="{{ rental.id }}">
     
     <label>Motorcycle ID
@@ -23,11 +23,7 @@
     <label>End Date
         <input type="date" name="end_date" value="{{ rental.end_date }}" required>
     </label>
-    <label>Upload Photo
-    <input type="file" name="fileToUpload" id="fileToUpload">
-  <input type="submit" value="Upload Image" name="submit">
-    </label>
-    
+   
     <button type="submit" class="btn">Update Rental</button>
 </form>
 

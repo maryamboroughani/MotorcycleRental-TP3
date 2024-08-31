@@ -11,7 +11,6 @@
             <th>User ID</th>
             <th>Start Date</th>
             <th>End Date</th>
-            <th>Photo</th> <!-- New column for photo -->
             <th>Actions</th>
         </tr>
     </thead>
@@ -23,13 +22,6 @@
             <td>{{ rental.user_id }}</td>
             <td>{{ rental.start_date|date('d M Y') }}</td>
             <td>{{ rental.end_date|date('d M Y') }}</td>
-            <td>
-                {% if rental.photo is defined and rental.photo %}
-                    <img src="{{ base }}/uploads/{{ rental.photo }}" alt="Rental Photo" style="width: 100px; height: auto;">
-                {% else %}
-                    No photo
-                {% endif %}
-            </td>
             <td>
                 <a href="{{ base }}/rental/show?id={{ rental.id }}">View</a>
                 <a href="{{ base }}/rental/edit?id={{ rental.id }}">Edit</a>

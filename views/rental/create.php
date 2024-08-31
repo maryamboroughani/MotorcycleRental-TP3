@@ -8,7 +8,7 @@
     {% endfor %}
 {% endif %}
 
-<form action="{{ base }}/rental/create" method="post" enctype="multipart/form-data">
+<form action="{{ base }}/rental/create" method="post" >
     <label>Motorcycle ID
         <input type="text" name="motorcycle_id" value="{{ rental.motorcycle_id | default('') }}" required>
     </label>
@@ -21,12 +21,7 @@
     <label>End Date
         <input type="date" name="end_date" value="{{ rental.end_date | default('') }}" required>
     </label>
-    <form action="upload.php" method="post" enctype="multipart/form-data">
-    Select image to upload:
-    <input type="file" name="fileToUpload" id="fileToUpload">
-    <input type="submit" value="Upload Image" name="submit">
-</form>
-
+    
     
     <button type="submit" class="btn">Create Rental</button>
 </form>

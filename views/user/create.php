@@ -35,17 +35,23 @@
             <span class="error">{{ errors.password }}</span>
         {% endif %}
         <label>Privilege
-    <select name="privilege_id">
-        <option value="">Select Privilege</option>
-        {% for privilege in privileges %}
-        <option value="{{privilege.id}}" {% if privilege.id==user.privilege_id %} selected {% endif %}>{{privilege.privilege_name}}</option>
-        {% endfor %}
-    </select>
-</label>
+            <select name="privilege_id">
+                <option value="">Select Privilege</option>
+                {% for privilege in privileges %}
+                <option value="{{privilege.id}}" {% if privilege.id==user.privilege_id %} selected {% endif %}>{{privilege.privilege_name}}</option>
+                {% endfor %}
+            </select>
+        </label>
+        {% if errors.privilege_id is defined %}
+        <span class="error">{{ errors.privilege_id }}</span>
+        {% endif %}
 
-            {% if errors.privilege_id is defined %}
-                <span class="error">{{ errors.privilege_id }}</span>
-            {% endif %}
+        <form action="upload.php" method="post" enctype="multipart/form-data">
+    Select image to upload:
+    <input type="file" name="fileToUpload" id="fileToUpload">
+    <input type="submit" value="Upload Image" name="submit">
+    </form>
+
         
         <input type="submit" class="btn" value="Save">
     </form>

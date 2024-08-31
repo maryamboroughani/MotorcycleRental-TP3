@@ -4,9 +4,9 @@ namespace App\Models;
 use App\Models\CRUD;
 
 class User extends CRUD {
-    protected $table = 'users'; // Adjusted table name
+    protected $table = 'users'; 
     protected $primaryKey = 'id'; // Primary key field
-    protected $fillable = ['first_name', 'last_name', 'email', 'password', 'privilege_id']; // Fillable fields
+    protected $fillable = ['first_name', 'last_name', 'email', 'password', 'privilege_id', 'photo_path']; // Fillable fields
     private $salt = "H4@1&"; // Salt for password hashing
 
     /**
@@ -26,7 +26,7 @@ class User extends CRUD {
         $user = $this->unique('email', $email); // Fetch user by email
     
         if ($user) {
-            error_log('User data fetched: ' . json_encode($user)); // Debugging: Log user data fetched from the database
+            error_log('User data fetched: ' . json_encode($user)); 
     
             if (password_verify($password . $this->salt, $user['password'])) {
                 // Password verification successful
